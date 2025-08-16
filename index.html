@@ -176,19 +176,19 @@
 </head>
 <body>
   <div class="container">
-    <h1>💪 励まし筋トレタイマー 🌸</h1>
+    <h1>💪 Cheer Workout Timer 🌸</h1>
     <div class="row">
       <label>セット数 <input id="sets" type="number" value="8" min="1" /></label>
       <label>作業(秒) <input id="work" type="number" value="45" min="5" /></label>
       <label>休憩(秒) <input id="rest" type="number" value="15" min="0" /></label>
     </div>
     <div class="row">
-      <button id="startBtn">🌟 開始</button>
-      <button id="stopBtn">⏸️ 停止</button>
-      <button id="installBtn" hidden>📱 ホーム画面に追加</button>
+      <button id="startBtn">🌟 Start</button>
+      <button id="stopBtn">⏸️ Stop</button>
+      <button id="installBtn" hidden>📱 Add to Home</button>
     </div>
-    <div class="hint">🔊 音量ONにして「開始」を押すと読み上げが動きます。ホーム画面に追加すると全画面で使えます。</div>
-    <div id="status">💤 停止中</div>
+    <div class="hint">🔊 音量ONにして「Start」を押すと読み上げが動きます。ホーム画面に追加すると全画面で使えます。</div>
+    <div id="status">💤 Stopped</div>
     <div id="msg"></div>
   </div>
 
@@ -340,7 +340,7 @@
 
       running = true;
       currentSet = 0;
-      setStatus("🌸 準備中\nフォームを意識して");
+      setStatus("🌸 Getting Ready\nフォームを意識して");
       show("フォームを意識しよう");
       await speak("準備開始。フォームを意識しよう。", { emotion: 'calm' });
       vibrate([50]);
@@ -350,7 +350,7 @@
 
       while (running && currentSet < totalSets) {
         currentSet++;
-        setStatus(`💪 セット ${currentSet}/${totalSets} WORKOUT（${work}秒）`);
+        setStatus(`💪 Set ${currentSet}/${totalSets} WORKOUT (${work}sec)`);
         document.getElementById("status").className = "working";
         const p = getPhrase(currentSet, totalSets);
         show(p);
@@ -361,7 +361,7 @@
         if (!running) break;
 
         if (currentSet < totalSets && rest > 0) {
-          setStatus(`😌 休憩タイム\nあと ${rest} 秒`);
+          setStatus(`😌 Rest Time\n${rest} sec left`);
           document.getElementById("status").className = "";
           const rp = "呼吸を整えて、次も丁寧に。";
           show(rp);
@@ -372,7 +372,7 @@
       }
 
       if (running) {
-        setStatus("🎉 完了！おつかれさま！ 🎉");
+        setStatus("🎉 Complete! Great Job! 🎉");
         document.getElementById("status").className = "completed";
         const ep = "やり切った！すばらしい集中力！";
         show(ep);
