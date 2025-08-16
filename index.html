@@ -350,7 +350,7 @@
 
       while (running && currentSet < totalSets) {
         currentSet++;
-        setStatus(`💪 セット ${currentSet}/${totalSets} 作業中（${work}秒）`);
+        setStatus(`💪 セット ${currentSet}/${totalSets} WORKOUT（${work}秒）`);
         document.getElementById("status").className = "working";
         const p = getPhrase(currentSet, totalSets);
         show(p);
