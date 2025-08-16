@@ -41,7 +41,7 @@
     }
     
     h1 { 
-      font-size: 20px; 
+      font-size: 18px; 
       margin-bottom: 12px; 
       text-align: center;
       background: linear-gradient(45deg, #ff6b9d, #c44569);
@@ -51,12 +51,35 @@
       white-space: nowrap;
       overflow: hidden;
       line-height: 1.2;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+    
+    @media (min-width: 380px) {
+      h1 {
+        font-size: 20px;
+      }
     }
     
     @media (min-width: 420px) {
       h1 {
         font-size: 24px;
         margin-bottom: 16px;
+      }
+    }
+    
+    .title-text {
+      display: inline-block;
+      max-width: 100%;
+    }
+    
+    @media (max-width: 320px) {
+      h1 {
+        font-size: 16px;
+        white-space: normal;
+      }
+      .title-text {
+        line-height: 1.1;
       }
     }
     
@@ -242,7 +265,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>💪 Cheer Workout Timer 🌸</h1>
+    <h1><span class="title-text">💪 Cheer Workout Timer 🌸</span></h1>
     <div class="row">
       <label>セット数 <input id="sets" type="number" value="8" min="1" /></label>
       <label>作業(秒) <input id="work" type="number" value="45" min="5" /></label>
