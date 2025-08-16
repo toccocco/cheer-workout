@@ -98,11 +98,17 @@
     
     #status { 
       margin-top: 24px; 
-      font-size: 28px; 
+      font-size: 22px; 
       text-align: center;
       font-weight: bold;
       color: #ff6b9d;
       text-shadow: 0 2px 4px rgba(255, 107, 157, 0.3);
+      line-height: 1.6;
+      padding: 16px;
+      background: rgba(255, 193, 227, 0.1);
+      border-radius: 16px;
+      border: 1px solid rgba(255, 193, 227, 0.3);
+      white-space: pre-line;
     }
     
     #msg { 
@@ -328,7 +334,7 @@
 
       running = true;
       currentSet = 0;
-      setStatus("🌸 準備中…");
+      setStatus("🌸 準備中\nフォームを意識して");
       show("フォームを意識しよう");
       await speak("準備開始。フォームを意識しよう。", { emotion: 'calm' });
       vibrate([50]);
@@ -338,7 +344,7 @@
 
       while (running && currentSet < totalSets) {
         currentSet++;
-        setStatus(`💪 作業中：セット ${currentSet} / ${totalSets}（${work}秒）`);
+        setStatus(`💪 セット ${currentSet} / ${totalSets}\n作業中（${work}秒）`);
         document.getElementById("status").className = "working";
         const p = getPhrase(currentSet, totalSets);
         show(p);
@@ -349,7 +355,7 @@
         if (!running) break;
 
         if (currentSet < totalSets && rest > 0) {
-          setStatus(`😌 休憩中：${rest}秒`);
+          setStatus(`😌 休憩タイム\nあと ${rest} 秒`);
           document.getElementById("status").className = "";
           const rp = "呼吸を整えて、次も丁寧に。";
           show(rp);
