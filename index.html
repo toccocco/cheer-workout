@@ -34,6 +34,8 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       font-weight: bold;
+      white-space: nowrap;
+      overflow: hidden;
     }
     
     .row { 
@@ -109,6 +111,10 @@
       border-radius: 16px;
       border: 1px solid rgba(255, 193, 227, 0.3);
       white-space: pre-line;
+    }
+    
+    #status.working {
+      white-space: nowrap;
     }
     
     #msg { 
@@ -344,7 +350,7 @@
 
       while (running && currentSet < totalSets) {
         currentSet++;
-        setStatus(`💪 セット ${currentSet} / ${totalSets}\n作業中（${work}秒）`);
+        setStatus(`💪 セット ${currentSet}/${totalSets} 作業中（${work}秒）`);
         document.getElementById("status").className = "working";
         const p = getPhrase(currentSet, totalSets);
         show(p);
