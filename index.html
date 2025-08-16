@@ -249,8 +249,8 @@
           const u = new SpeechSynthesisUtterance(text);
           u.lang = "ja-JP";
           
-          // 可愛くてゆっくりな音声設定
-          const baseRate = options.rate || 0.8;  // 基本速度をゆっくりに
+          // 可愛くて適度な速度の音声設定
+          const baseRate = options.rate || 1.0;  // 基本速度を普通に
           const basePitch = options.pitch || 1.4;  // 基本ピッチを高く（可愛い声）
           
           // 小さなランダム調整値（±5%の範囲で控えめに）
@@ -263,10 +263,10 @@
           // 感情に応じた調整（可愛い声ベース）
           if (options.emotion === 'encouragement') {
             u.pitch = Math.max(1.2, Math.min(2.0, basePitch + 0.2 + pitchVariation));  // より高く
-            u.rate = Math.max(0.6, Math.min(1.0, baseRate - 0.1 + rateVariation));   // 少しゆっくり
+            u.rate = Math.max(0.8, Math.min(1.3, baseRate + 0.1 + rateVariation));   // 少し早めに
           } else if (options.emotion === 'calm') {
             u.pitch = Math.max(1.0, Math.min(1.8, basePitch - 0.2 + pitchVariation)); // 少し低めだけど可愛く
-            u.rate = Math.max(0.5, Math.min(0.9, baseRate - 0.2 + rateVariation));   // かなりゆっくり
+            u.rate = Math.max(0.7, Math.min(1.1, baseRate - 0.1 + rateVariation));   // 適度にゆっくり
           }
           
           // 句読点での間を作るため、テキストを調整
