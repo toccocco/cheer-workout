@@ -72,9 +72,12 @@
       }
     }
     
-    /* Safariで透明になってしまう場合の対策 */
+    /* Safari専用調整 */
     @media screen and (-webkit-min-device-pixel-ratio: 0) {
-      _::-webkit-full-page-media, _:future, :root h1 {
+      h1 {
+        white-space: normal !important;
+        word-break: break-word;
+        overflow-wrap: break-word;
         -webkit-text-fill-color: #ff6b9d;
         background: none;
       }
@@ -241,7 +244,16 @@
     }
     
     #status.working {
-      white-space: nowrap;
+      white-space: normal;
+      word-break: break-word;
+      overflow-wrap: break-word;
+    }
+    
+    /* Safari専用：強制的に改行を許可 */
+    @media screen and (-webkit-min-device-pixel-ratio: 0) {
+      #status.working {
+        white-space: normal !important;
+      }
     }
     
     #msg { 
@@ -396,15 +408,15 @@
           // ブラウザ別基本速度調整
           let browserRateMultiplier = 1.0;
           if (isChrome) {
-            browserRateMultiplier = 0.6;  // Chromeはさらに遅くする
+            browserRateMultiplier = 0.5;  // Chromeを最も遅く
           } else if (isSafari) {
-            browserRateMultiplier = 0.8;  // Safariも少し遅めに
+            browserRateMultiplier = 0.7;  // Safariも遅めに
           } else if (isFirefox) {
-            browserRateMultiplier = 0.7;  // Firefoxも遅めに
+            browserRateMultiplier = 0.6;  // Firefoxも遅めに
           }
           
           // 可愛くてゆっくりな音声設定
-          const baseRate = (options.rate || 0.7) * browserRateMultiplier;
+          const baseRate = (options.rate || 0.6) * browserRateMultiplier;
           const basePitch = options.pitch || 1.4;  // 基本ピッチを高く（可愛い声）
           
           // 小さなランダム調整値（±5%の範囲で控えめに）
