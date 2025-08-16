@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>励まし筋トレタイマー</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#ffffff">
+  <style>
+    body { 
+      font-family: "Hiragino Sans", "Yu Gothic", system-ui, -apple-system, sans-serif; 
+      margin: 0; 
+      padding: 20px;
+      background: linear-gradient(135deg, #ffeef8 0%, #f0f8ff 50%, #fff0f8 100%);
+      min-height: 100vh;
+      color: #5a4b7a;
+    }
+    
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 24px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 24px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+    }
+    
+    h1 { 
+      font-size: 24px; 
+      margin-bottom: 16px; 
+      text-align: center;
+      background: linear-gradient(45deg, #ff6b9d, #c44569);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: bold;
+    }
+    
+    .row { 
+      margin: 16px 0; 
+      display: flex; 
+      gap: 12px; 
+      align-items: center; 
+      flex-wrap: wrap; 
+      justify-content: center;
+    }
+    
+    input { 
+      width: 80px; 
+      padding: 12px 16px; 
+      font-size: 16px; 
+      border: 2px solid #ffc1e3;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.8);
+      text-align: center;
+      color: #5a4b7a;
+      font-weight: bold;
+    }
+    
+    input:focus {
+      outline: none;
+      border-color: #ff6b9d;
+      box-shadow: 0 0 0 3px rgba(255, 107, 157, 0.2);
+    }
+    
+    label {
+      font-weight: bold;
+      color: #8b7aa8;
+      font-size: 14px;
+    }
+    
+    button { 
+      padding: 14px 24px; 
+      border: none; 
+      border-radius: 20px; 
+      background: linear-gradient(45deg, #ff6b9d, #ff8fab);
+      color: white;
+      font-size: 16px; 
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(255, 107, 157, 0.3);
+    }
+    
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 107, 157, 0.4);
+    }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    #stopBtn {
+      background: linear-gradient(45deg, #a8a8a8, #c0c0c0);
+      box-shadow: 0 4px 15px rgba(168, 168, 168, 0.3);
+    }
+    
+    #status { 
+      margin-top: 24px; 
+      font-size: 28px; 
+      text-align: center;
+      font-weight: bold;
+      color: #ff6b9d;
+      text-shadow: 0 2px 4px rgba(255, 107, 157, 0.3);
+    }
+    
+    #msg { 
+      margin-top: 20px; 
+      font-size: 20px; 
+      min-height: 2em; 
+      text-align: center;
+      background: linear-gradient(135deg, #fff, #ffeef8);
+      padding: 20px;
+      border-radius: 20px;
+      border: 2px solid #ffc1e3;
+      color: #8b7aa8;
+      font-weight: bold;
+      box-shadow: 0 4px 15px rgba(255, 193, 227, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    #msg::before {
+      content: '💖';
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      font-size: 16px;
+      opacity: 0.6;
+    }
+    
+    .hint { 
+      color: #a8a8a8; 
+      font-size: 13px; 
+      text-align: center;
+      margin-top: 16px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 12px;
+    }
+    
+    .working {
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    .completed {
+      animation: celebration 0.8s ease-out;
+    }
+    
+    @keyframes celebration {
+      0% { transform: scale(1) rotate(0deg); }
+      25% { transform: scale(1.1) rotate(-5deg); }
+      75% { transform: scale(1.1) rotate(5deg); }
+      100% { transform: scale(1) rotate(0deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>💪 励まし筋トレタイマー 🌸</h1>
+    <div class="row">
+      <label>セット数 <input id="sets" type="number" value="8" min="1" /></label>
+      <label>作業(秒) <input id="work" type="number" value="45" min="5" /></label>
+      <label>休憩(秒) <input id="rest" type="number" value="15" min="0" /></label>
+    </div>
+    <div class="row">
+      <button id="startBtn">🌟 開始</button>
+      <button id="stopBtn">⏸️ 停止</button>
+      <button id="installBtn" hidden>📱 ホーム画面に追加</button>
+    </div>
+    <div class="hint">🔊 音量ONにして「開始」を押すと読み上げが動きます。ホーム画面に追加すると全画面で使えます。</div>
+    <div id="status">💤 停止中</div>
+    <div id="msg"></div>
+  </div>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js'));
+    }
+
+    let deferredPrompt = null;
+    const installBtn = document.getElementById('installBtn');
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.hidden = false;
+    });
+    installBtn.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      installBtn.hidden = true;
+    });
+
+    let wakeLock = null;
+    async function requestWakeLock() {
+      try {
+        if ('wakeLock' in navigator) {
+          wakeLock = await navigator.wakeLock.request('screen');
+          wakeLock.addEventListener('release', () => {});
+        }
+      } catch (e) {}
+    }
+    function releaseWakeLock() {
+      try { wakeLock?.release(); wakeLock = null; } catch(e) {}
+    }
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && wakeLock) requestWakeLock();
+    });
+
+    const phrases = {
+      start: [
+        "いい調子、フォームを意識して！",
+        "呼吸を忘れずに、丁寧に！",
+        "背中の軸まっすぐ、ナイス！",
+        "集中、リズムをキープ！"
+      ],
+      middle: [
+        "その調子、継続が大切！",
+        "きょうの努力は明日の自信！",
+        "いいペース、そのまま続けて！",
+        "体の声を聞きながら、丁寧に！"
+      ],
+      end: [
+        "あとちょっと、ここを乗り越えたら強くなる！",
+        "ここからが本番、粘ろう！",
+        "最後まで気を抜かずに！",
+        "最後のひと踏ん張り、頑張って！"
+      ]
+    };
+
+    let running = false, currentSet = 0, timerId = null;
+
+    function vibrate(pattern) {
+      if (navigator.vibrate) navigator.vibrate(pattern);
+    }
+
+    function speak(text, options = {}) {
+      return new Promise((resolve) => {
+        try {
+          const u = new SpeechSynthesisUtterance(text);
+          u.lang = "ja-JP";
+          
+          // 可愛くてゆっくりな音声設定
+          const baseRate = options.rate || 0.8;  // 基本速度をゆっくりに
+          const basePitch = options.pitch || 1.4;  // 基本ピッチを高く（可愛い声）
+          
+          // 小さなランダム調整値（±5%の範囲で控えめに）
+          const rateVariation = (Math.random() - 0.5) * 0.1;
+          const pitchVariation = (Math.random() - 0.5) * 0.1;
+          
+          u.rate = Math.max(0.5, Math.min(1.2, baseRate + rateVariation));
+          u.pitch = Math.max(1.0, Math.min(2.0, basePitch + pitchVariation));
+          
+          // 感情に応じた調整（可愛い声ベース）
+          if (options.emotion === 'encouragement') {
+            u.pitch = Math.max(1.2, Math.min(2.0, basePitch + 0.2 + pitchVariation));  // より高く
+            u.rate = Math.max(0.6, Math.min(1.0, baseRate - 0.1 + rateVariation));   // 少しゆっくり
+          } else if (options.emotion === 'calm') {
+            u.pitch = Math.max(1.0, Math.min(1.8, basePitch - 0.2 + pitchVariation)); // 少し低めだけど可愛く
+            u.rate = Math.max(0.5, Math.min(0.9, baseRate - 0.2 + rateVariation));   // かなりゆっくり
+          }
+          
+          // 句読点での間を作るため、テキストを調整
+          const processedText = text
+            .replace(/、/g, '、　')  // 読点の後に間を追加
+            .replace(/！/g, '！　')  // 感嘆符の後に間を追加
+            .replace(/。/g, '。　');  // 句点の後に間を追加
+          
+          u.text = processedText;
+          
+          // 音声終了時にPromiseを解決
+          u.onend = () => {
+            setTimeout(resolve, 300); // 音声終了後300ms追加の間
+          };
+          
+          u.onerror = () => {
+            resolve(); // エラー時も解決して処理を続行
+          };
+          
+          window.speechSynthesis.cancel();
+          window.speechSynthesis.speak(u);
+        } catch (e) {
+          resolve(); // 例外時も解決
+        }
+      });
+    }
+
+    function getPhrase(currentSet, totalSets) {
+      let phaseArray;
+      const progress = currentSet / totalSets;
+      
+      if (progress <= 0.3) {
+        phaseArray = phrases.start;  // 序盤（30%まで）
+      } else if (progress <= 0.7) {
+        phaseArray = phrases.middle; // 中盤（30-70%）
+      } else {
+        phaseArray = phrases.end;    // 終盤（70%以降）
+      }
+      
+      return phaseArray[Math.floor(Math.random() * phaseArray.length)];
+    }
+
+    function show(text) {
+      document.getElementById("msg").textContent = text;
+    }
+
+    function setStatus(text) {
+      document.getElementById("status").textContent = text;
+    }
+
+    function waitSec(sec) {
+      return new Promise(res => { timerId = setTimeout(res, sec * 1000); });
+    }
+
+    async function run() {
+      const totalSets = parseInt(document.getElementById("sets").value, 10);
+      const work = parseInt(document.getElementById("work").value, 10);
+      const rest = parseInt(document.getElementById("rest").value, 10);
+
+      running = true;
+      currentSet = 0;
+      setStatus("🌸 準備中…");
+      show("フォームを意識しよう");
+      await speak("準備開始。フォームを意識しよう。", { emotion: 'calm' });
+      vibrate([50]);
+
+      await requestWakeLock();
+      await waitSec(2); // 音声待機を含めて適切な間隔に短縮
+
+      while (running && currentSet < totalSets) {
+        currentSet++;
+        setStatus(`💪 作業中：セット ${currentSet} / ${totalSets}（${work}秒）`);
+        document.getElementById("status").className = "working";
+        const p = getPhrase(currentSet, totalSets);
+        show(p);
+        await speak(p, { emotion: 'encouragement' });
+        await waitSec(1); // 励ましの後に少し間を置く
+        vibrate([100, 50, 100]);
+        await waitSec(work);
+        if (!running) break;
+
+        if (currentSet < totalSets && rest > 0) {
+          setStatus(`😌 休憩中：${rest}秒`);
+          document.getElementById("status").className = "";
+          const rp = "呼吸を整えて、次も丁寧に。";
+          show(rp);
+          await speak(rp, { emotion: 'calm' });
+          vibrate([100]);
+          await waitSec(rest);
+        }
+      }
+
+      if (running) {
+        setStatus("🎉 完了！おつかれさま！ 🎉");
+        document.getElementById("status").className = "completed";
+        const ep = "やり切った！すばらしい集中力！";
+        show(ep);
+        await speak(ep, { emotion: 'encouragement' });
+        vibrate([200, 80, 200, 80, 200]);
+      }
+      running = false;
+      releaseWakeLock();
+    }
+
+    document.getElementById("startBtn").addEventListener("click", () => {
+      if (running) return;
+      run();
+    });
+    document.getElementById("stopBtn").addEventListener("click", () => {
+      running = false;
+      clearTimeout(timerId);
+      window.speechSynthesis.cancel();
+      setStatus("💤 停止中");
+      document.getElementById("status").className = "";
+      show("");
+      releaseWakeLock();
+    });
+  </script>
+</body>
+</html>
