@@ -73,13 +73,26 @@
       max-width: 100%;
     }
     
+    .title-mobile {
+      display: block;
+    }
+    
+    .title-desktop {
+      display: none;
+    }
+    
+    @media (min-width: 420px) {
+      .title-mobile {
+        display: none;
+      }
+      .title-desktop {
+        display: block;
+      }
+    }
+    
     @media (max-width: 320px) {
       h1 {
         font-size: 16px;
-        white-space: normal;
-      }
-      .title-text {
-        line-height: 1.1;
       }
     }
     
@@ -265,7 +278,7 @@
 </head>
 <body>
   <div class="container">
-    <h1><span class="title-text">💪 Cheer Workout Timer 🌸</span></h1>
+    <h1><span class="title-text title-mobile">💪 Workout Timer 🌸</span><span class="title-text title-desktop">💪 Cheer Workout Timer 🌸</span></h1>
     <div class="row">
       <label>セット数 <input id="sets" type="number" value="8" min="1" /></label>
       <label>作業(秒) <input id="work" type="number" value="45" min="5" /></label>
