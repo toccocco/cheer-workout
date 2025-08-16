@@ -356,6 +356,21 @@
           const u = new SpeechSynthesisUtterance(text);
           u.lang = "ja-JP";
           
+          // 利用可能な音声を取得して、より自然な声を選択
+          const voices = window.speechSynthesis.getVoices();
+          const japaneseVoices = voices.filter(voice => voice.lang.includes('ja'));
+          
+          // より自然な音声を優先選択
+          if (japaneseVoices.length > 0) {
+            // 女性の声でより自然なものを選択
+            const naturalVoice = japaneseVoices.find(voice => 
+              voice.name.includes('Kyoko') || 
+              voice.name.includes('Google') ||
+              voice.name.includes('Microsoft')
+            ) || japaneseVoices[0];
+            u.voice = naturalVoice;
+          }
+          
           // ブラウザ検出
           const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
           const isSafari = /Safari/.test(navigator.userAgent) && /Apple Computer/.test(navigator.vendor);
@@ -371,9 +386,9 @@
             browserRateMultiplier = 0.6;  // Firefoxも遅めに
           }
           
-          // 可愛くてゆっくりな音声設定
+          // 自然でゆっくりな音声設定
           const baseRate = (options.rate || 0.6) * browserRateMultiplier;
-          const basePitch = options.pitch || 1.4;  // 基本ピッチを高く（可愛い声）
+          const basePitch = options.pitch || 1.1;  // 基本ピッチを自然に（少し高め程度）
           
           // 小さなランダム調整値（±5%の範囲で控えめに）
           const rateVariation = (Math.random() - 0.5) * 0.1;
@@ -382,13 +397,13 @@
           u.rate = Math.max(0.8, Math.min(1.5, baseRate + rateVariation));
           u.pitch = Math.max(1.0, Math.min(2.0, basePitch + pitchVariation));
           
-          // 感情に応じた調整（可愛い声ベース）
+          // 感情に応じた調整（自然な声ベース）
           if (options.emotion === 'encouragement') {
-            u.pitch = Math.max(1.2, Math.min(2.0, basePitch + 0.2 + pitchVariation));  // より高く
-            u.rate = Math.max(1.0, Math.min(1.5, baseRate + 0.2 + rateVariation));   // 早めに
+            u.pitch = Math.max(1.0, Math.min(1.5, basePitch + 0.1 + pitchVariation));  // 少し高めに
+            u.rate = Math.max(0.8, Math.min(1.2, baseRate + 0.1 + rateVariation));   // 少し早めに
           } else if (options.emotion === 'calm') {
-            u.pitch = Math.max(1.0, Math.min(1.8, basePitch - 0.2 + pitchVariation)); // 少し低めだけど可愛く
-            u.rate = Math.max(0.9, Math.min(1.3, baseRate + 0.0 + rateVariation));   // 普通の速度
+            u.pitch = Math.max(0.9, Math.min(1.3, basePitch - 0.1 + pitchVariation)); // 少し低めで落ち着いて
+            u.rate = Math.max(0.7, Math.min(1.0, baseRate - 0.1 + rateVariation));   // ゆっくり
           }
           
           // 句読点での間を作るため、テキストを調整
