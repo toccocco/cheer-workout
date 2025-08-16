@@ -1,537 +1,270 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>励まし筋トレタイマー</title>
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#ffffff">
-  <style>
-    body { 
-      font-family: "Hiragino Sans", "Yu Gothic", system-ui, -apple-system, sans-serif; 
-      margin: 0; 
-      padding: 12px;
-      background: linear-gradient(135deg, #ffeef8 0%, #f0f8ff 50%, #fff0f8 100%);
-      min-height: 100vh;
-      color: #5a4b7a;
-      box-sizing: border-box;
-    }
-    
-    .container {
-      max-width: 100%;
-      width: 100%;
-      margin: 0 auto;
-      padding: 16px;
-      background: rgba(255, 255, 255, 0.9);
-      border-radius: 20px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-      backdrop-filter: blur(10px);
-      box-sizing: border-box;
-    }
-    
-    @media (min-width: 420px) {
-      .container {
-        max-width: 400px;
-        padding: 24px;
-        border-radius: 24px;
-      }
-      body {
-        padding: 20px;
-      }
-    }
-    
-    h1 { 
-      font-size: clamp(1rem, 4.5vw, 1.5rem); 
-      margin-bottom: 0.75rem; 
-      text-align: center;
-      font-weight: bold;
-      white-space: nowrap;
-      overflow: hidden;
-      line-height: 1.2;
-      max-width: 100%;
-      box-sizing: border-box;
-      
-      /* Safari対応のグラデーション */
-      background: linear-gradient(45deg, #ff6b9d, #c44569);
-      background: -webkit-linear-gradient(45deg, #ff6b9d, #c44569);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      
-      /* フォールバック：グラデーションが効かない場合 */
-      color: #ff6b9d;
-    }
-    
-    /* Safari専用調整 */
-    @supports (-webkit-background-clip: text) {
-      h1 {
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-      }
-    }
-    
-    /* Safari専用調整 */
-    @media screen and (-webkit-min-device-pixel-ratio: 0) {
-      h1 {
-        white-space: normal !important;
-        word-break: break-word;
-        overflow-wrap: break-word;
-        -webkit-text-fill-color: #ff6b9d;
-        background: none;
-      }
-    }
-    
-    /* clampで自動調整されるためメディアクエリ不要 */
-    
-    .title-text {
-      display: inline-block;
-      max-width: 100%;
-    }
-    
-    .title-mobile {
-      display: block;
-    }
-    
-    .title-desktop {
-      display: none;
-    }
-    
-    @media (min-width: 420px) {
-      .title-mobile {
-        display: none;
-      }
-      .title-desktop {
-        display: block;
-      }
-    }
-    
-    @media (max-width: 320px) {
-      h1 {
-        font-size: 16px;
-      }
-    }
-    
-    .row { 
-      margin: 12px 0; 
-      display: flex; 
-      gap: 8px; 
-      align-items: center; 
-      flex-wrap: wrap; 
-      justify-content: center;
-    }
-    
-    @media (min-width: 420px) {
-      .row {
-        margin: 16px 0;
-        gap: 12px;
-      }
-    }
-    
-    input { 
-      width: clamp(4rem, 20vw, 5rem); 
-      padding: clamp(0.6rem, 3vw, 1rem); 
-      font-size: clamp(0.8rem, 3.5vw, 1rem); 
-      border: 2px solid #ffc1e3;
-      border-radius: clamp(0.75rem, 3vw, 1rem);
-      background: rgba(255, 255, 255, 0.8);
-      text-align: center;
-      color: #5a4b7a;
-      font-weight: bold;
-      box-sizing: border-box;
-    }
-    
-    input:focus {
-      outline: none;
-      border-color: #ff6b9d;
-      box-shadow: 0 0 0 3px rgba(255, 107, 157, 0.2);
-    }
-    
-    label {
-      font-weight: bold;
-      color: #8b7aa8;
-      font-size: clamp(0.75rem, 3vw, 0.9rem);
-      white-space: nowrap;
-    }
-    
-    button { 
-      padding: clamp(0.75rem, 3vw, 1rem) clamp(1.25rem, 5vw, 1.5rem); 
-      border: none; 
-      border-radius: clamp(1rem, 4vw, 1.25rem); 
-      background: linear-gradient(45deg, #ff6b9d, #ff8fab);
-      color: white;
-      font-size: clamp(0.8rem, 3.5vw, 1rem); 
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(255, 107, 157, 0.3);
-      white-space: nowrap;
-    }
-    
-    button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(255, 107, 157, 0.4);
-    }
-    
-    button:active {
-      transform: translateY(0);
-    }
-    
-    #stopBtn {
-      background: linear-gradient(45deg, #a8a8a8, #c0c0c0);
-      box-shadow: 0 4px 15px rgba(168, 168, 168, 0.3);
-    }
-    
-    #status { 
-      margin-top: clamp(1.25rem, 5vw, 1.5rem); 
-      font-size: clamp(1rem, 4.5vw, 1.4rem); 
-      text-align: center;
-      font-weight: bold;
-      color: #ff6b9d;
-      text-shadow: 0 2px 4px rgba(255, 107, 157, 0.3);
-      line-height: 1.4;
-      padding: clamp(0.75rem, 3vw, 1rem);
-      background: rgba(255, 193, 227, 0.1);
-      border-radius: clamp(0.75rem, 3vw, 1rem);
-      border: 1px solid rgba(255, 193, 227, 0.3);
-      white-space: pre-line;
-      box-sizing: border-box;
-    }
-    
-    #status.working {
-      white-space: normal;
-      word-break: break-word;
-      overflow-wrap: break-word;
-    }
-    
-    /* Safari専用：強制的に改行を許可 */
-    @media screen and (-webkit-min-device-pixel-ratio: 0) {
-      #status.working {
-        white-space: normal !important;
-      }
-    }
-    
-    #msg { 
-      margin-top: 20px; 
-      font-size: 20px; 
-      min-height: 2em; 
-      text-align: center;
-      background: linear-gradient(135deg, #fff, #ffeef8);
-      padding: 20px;
-      border-radius: 20px;
-      border: 2px solid #ffc1e3;
-      color: #8b7aa8;
-      font-weight: bold;
-      box-shadow: 0 4px 15px rgba(255, 193, 227, 0.3);
-      position: relative;
-      overflow: hidden;
-    }
-    
-    #msg::before {
-      content: '💖';
-      position: absolute;
-      top: 8px;
-      right: 12px;
-      font-size: 16px;
-      opacity: 0.6;
-    }
-    
-    .hint { 
-      color: #a8a8a8; 
-      font-size: 13px; 
-      text-align: center;
-      margin-top: 16px;
-      padding: 12px;
-      background: rgba(255, 255, 255, 0.6);
-      border-radius: 12px;
-    }
-    
-    .working {
-      animation: pulse 2s infinite;
-    }
-    
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
-    
-    .completed {
-      animation: celebration 0.8s ease-out;
-    }
-    
-    @keyframes celebration {
-      0% { transform: scale(1) rotate(0deg); }
-      25% { transform: scale(1.1) rotate(-5deg); }
-      75% { transform: scale(1.1) rotate(5deg); }
-      100% { transform: scale(1) rotate(0deg); }
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>励まし筋トレタイマー</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#ffffff">
+<style>
+/* ========= Base ========= */
+html { -webkit-text-size-adjust: 100%; }
+body{
+  font-family:"Hiragino Sans","Yu Gothic",system-ui,-apple-system,sans-serif;
+  margin:0; padding:12px; min-height:100vh;
+  background:linear-gradient(135deg,#ffeef8 0%,#f0f8ff 50%,#fff0f8 100%);
+  color:#5a4b7a; box-sizing:border-box;
+}
+.container{
+  max-width:100%; width:100%; margin:0 auto; padding:16px;
+  background:rgba(255,255,255,.9); border-radius:20px;
+  box-shadow:0 8px 32px rgba(0,0,0,.1); backdrop-filter:blur(10px);
+  box-sizing:border-box;
+}
+@media (min-width:420px){ .container{max-width:400px; padding:24px; border-radius:24px;} body{padding:20px;} }
+
+/* ========= Heading ========= */
+h1{
+  /* サイズは少し下限を小さめにして収まりやすく */
+  font-size:clamp(.9rem,4.5vw,1.5rem);
+  margin-bottom:.75rem; text-align:center; font-weight:bold; line-height:1.25;
+
+  /* 折り返しを許可（日本語向け） */
+  white-space:normal;
+  word-break:normal;             /* CJK で自然な改行 */
+  overflow-wrap:anywhere;        /* はみ出し前提でも折り返す */
+  line-break:strict;             /* 和文の禁則に配慮 */
+  text-wrap:balance;             /* Safari/新Edge で見出しをきれいに */
+
+  /* クリップグラデ（非Safari） */
+  background:linear-gradient(45deg,#ff6b9d,#c44569);
+  background:-webkit-linear-gradient(45deg,#ff6b9d,#c44569);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+
+  /* 以前の overflow:hidden は見切れの原因なので削除 */
+}
+
+/* Safari はグラデ文字をやめて実線色に（折り返し安定） */
+@supports (-webkit-touch-callout: none){
+  h1{-webkit-text-fill-color:#ff6b9d; background:none;}
+}
+
+/* タイトルテキストのラッパはブロック+幅100%にして折り返せるように */
+.title-text{display:block; width:100%;}
+
+/* モバイル/デスクトップの出し分け */
+.title-mobile{display:block;}
+.title-desktop{display:none;}
+@media (min-width:420px){
+  .title-mobile{display:none;}
+  .title-desktop{display:block;}
+}
+@media (max-width:320px){ h1{font-size:16px;} }
+
+/* ========= Rows & Inputs ========= */
+.row{margin:12px 0; display:flex; gap:8px; align-items:center; flex-wrap:wrap; justify-content:center;}
+@media (min-width:420px){ .row{margin:16px 0; gap:12px;} }
+input[type="number"]{
+  width:clamp(4rem,20vw,5rem); padding:clamp(.6rem,3vw,1rem); font-size:clamp(.8rem,3.5vw,1rem);
+  border:2px solid #ffc1e3; border-radius:clamp(.75rem,3vw,1rem);
+  background:rgba(255,255,255,.8); text-align:center; color:#5a4b7a; font-weight:bold; box-sizing:border-box;
+}
+input:focus{outline:none; border-color:#ff6b9d; box-shadow:0 0 0 3px rgba(255,107,157,.2);}
+label{font-weight:bold; color:#8b7aa8; font-size:clamp(.75rem,3vw,.9rem); white-space:nowrap;}
+
+button{
+  padding:clamp(.75rem,3vw,1rem) clamp(1.25rem,5vw,1.5rem);
+  border:none; border-radius:clamp(1rem,4vw,1.25rem);
+  background:linear-gradient(45deg,#ff6b9d,#ff8fab); color:#fff;
+  font-size:clamp(.8rem,3.5vw,1rem); font-weight:bold; cursor:pointer; transition:.3s ease;
+  box-shadow:0 4px 15px rgba(255,107,157,.3); white-space:nowrap;
+}
+button:hover{transform:translateY(-2px); box-shadow:0 6px 20px rgba(255,107,157,.4);}
+button:active{transform:translateY(0);}
+#stopBtn{background:linear-gradient(45deg,#a8a8a8,#c0c0c0); box-shadow:0 4px 15px rgba(168,168,168,.3);}
+
+/* ========= Status / Message ========= */
+#status{
+  margin-top:clamp(1.25rem,5vw,1.5rem); font-size:clamp(1rem,4.5vw,1.3rem);
+  text-align:center; font-weight:bold; color:#ff6b9d; text-shadow:0 2px 4px rgba(255,107,157,.3);
+  line-height:1.5; padding:clamp(.75rem,3vw,1rem);
+  background:rgba(255,193,227,.1); border-radius:clamp(.75rem,3vw,1rem); border:1px solid rgba(255,193,227,.3);
+  /* ここも折り返しを明示 */
+  white-space:normal; word-break:normal; overflow-wrap:anywhere; line-break:strict;
+}
+#msg{
+  margin-top:20px; font-size:18px; min-height:2em; text-align:center;
+  background:linear-gradient(135deg,#fff,#ffeef8); padding:20px; border-radius:20px; border:2px solid #ffc1e3;
+  color:#8b7aa8; font-weight:bold; box-shadow:0 4px 15px rgba(255,193,227,.3); position:relative; overflow:hidden;
+  white-space:normal; word-break:normal; overflow-wrap:anywhere; line-break:strict;
+}
+#msg::before{content:'💖'; position:absolute; top:8px; right:12px; font-size:16px; opacity:.6;}
+
+.hint{color:#a8a8a8; font-size:13px; text-align:center; margin-top:16px; padding:12px; background:rgba(255,255,255,.6); border-radius:12px;}
+
+.working{animation:pulse 2s infinite;}
+@keyframes pulse{0%{transform:scale(1);}50%{transform:scale(1.05);}100%{transform:scale(1);}}
+.completed{animation:celebration .8s ease-out;}
+@keyframes celebration{0%{transform:scale(1) rotate(0);}25%{transform:scale(1.1) rotate(-5deg);}75%{transform:scale(1.1) rotate(5deg);}100%{transform:scale(1) rotate(0);}}
+
+.range{-webkit-appearance:none;width:140px;height:6px;border-radius:999px;background:#ffe0ef;outline:none;}
+.range::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:#ff6b9d;cursor:pointer;border:2px solid #fff;box-shadow:0 0 0 2px rgba(255,107,157,.2);}
+small{color:#8b7aa8;}
+</style>
 </head>
 <body>
-  <div class="container">
-    <h1><span class="title-text title-mobile">💪 Workout Timer 🌸</span><span class="title-text title-desktop">💪 Cheer Workout Timer 🌸</span></h1>
-    <div class="row">
-      <label>セット数 <input id="sets" type="number" value="8" min="1" /></label>
-      <label>作業(秒) <input id="work" type="number" value="45" min="5" /></label>
-      <label>休憩(秒) <input id="rest" type="number" value="15" min="0" /></label>
-    </div>
-    <div class="row">
-      <button id="startBtn">🌟 Start</button>
-      <button id="stopBtn">⏸️ Stop</button>
-      <button id="installBtn" hidden>📱 Add to Home</button>
-    </div>
-    <div class="hint">🔊 音量ONにして「Start」を押すと読み上げが動きます。ホーム画面に追加すると全画面で使えます。</div>
-    <div id="status">💤 Stopped</div>
-    <div id="msg"></div>
+<div class="container">
+  <h1>
+    <span class="title-text title-mobile">💪 Workout Timer 🌸</span>
+    <span class="title-text title-desktop">💪 Cheer Workout Timer 🌸</span>
+  </h1>
+
+  <div class="row">
+    <label>セット数 <input id="sets" type="number" value="8" min="1" /></label>
+    <label>作業(秒) <input id="work" type="number" value="45" min="5" /></label>
+    <label>休憩(秒) <input id="rest" type="number" value="15" min="0" /></label>
   </div>
 
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js'));
+  <!-- 読み上げ速度 -->
+  <div class="row">
+    <label>読み上げ速度
+      <input id="rate" class="range" type="range" min="0.5" max="1.0" step="0.01">
+    </label>
+    <small id="rateVal"></small>
+  </div>
+
+  <div class="row">
+    <button id="startBtn">🌟 Start</button>
+    <button id="stopBtn">⏸️ Stop</button>
+    <button id="installBtn" hidden>📱 Add to Home</button>
+  </div>
+
+  <div class="hint">🔊 音量ONにして「Start」を押すと読み上げが動きます。ホーム画面に追加すると全画面で使えます。</div>
+  <div id="status">💤 Stopped</div>
+  <div id="msg"></div>
+</div>
+
+<script>
+/* === SW === */
+if ('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('./sw.js'));
+
+/* === Install === */
+let deferredPrompt=null;
+const installBtn=document.getElementById('installBtn');
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;installBtn.hidden=false;});
+installBtn.addEventListener('click',async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;installBtn.hidden=true;});
+
+/* === Wake Lock === */
+let wakeLock=null;
+async function requestWakeLock(){try{if('wakeLock'in navigator){wakeLock=await navigator.wakeLock.request('screen');}}catch(e){}}
+function releaseWakeLock(){try{wakeLock?.release();wakeLock=null;}catch(e){}}
+addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&wakeLock)requestWakeLock();});
+
+/* === Rate UI persist === */
+const rateEl=document.getElementById('rate');
+const rateVal=document.getElementById('rateVal');
+const savedRate=parseFloat(localStorage.getItem('cheer-rate')||'0.7');
+rateEl.value=savedRate.toFixed(2); rateVal.textContent=savedRate.toFixed(2);
+rateEl.addEventListener('input',()=>{const v=parseFloat(rateEl.value);rateVal.textContent=v.toFixed(2);localStorage.setItem('cheer-rate',v.toString());});
+
+/* === Voices === */
+let voices=[];
+function refreshVoices(){voices=speechSynthesis.getVoices()||[];}
+refreshVoices();
+if(typeof speechSynthesis!=='undefined' && speechSynthesis.onvoiceschanged!==undefined){
+  speechSynthesis.onvoiceschanged=refreshVoices;
+}
+function jpVoice(){
+  const jp=voices.filter(v=>(v.lang||'').toLowerCase().startsWith('ja'));
+  return jp.find(v=>/Kyoko/i.test(v.name))||jp.find(v=>/Google/.test(v.name))||jp.find(v=>/Microsoft/i.test(v.name))||jp[0]||null;
+}
+
+/* === Talk (slow & stable) === */
+function speak(text,opts={}){
+  return new Promise(resolve=>{
+    try{
+      const u=new SpeechSynthesisUtterance();
+      u.lang="ja-JP";
+      u.text=text.replace(/、/g,'、　').replace(/！/g,'！　').replace(/。/g,'。　');
+      const v=jpVoice(); if(v) u.voice=v;
+
+      const ua=navigator.userAgent;
+      const isChrome=/Chrome/.test(ua)&&/Google Inc/.test(navigator.vendor);
+      const isSafari=/Safari/.test(ua)&&/Apple Computer/.test(navigator.vendor);
+      const isFirefox=/Firefox/.test(ua);
+
+      let mul=0.7; if(isChrome) mul=0.65; if(isSafari) mul=0.7; if(isFirefox) mul=0.6;
+      const userMul=parseFloat(localStorage.getItem('cheer-rate')||'0.7');
+      const baseRate=Math.max(0.5,Math.min(1.0,(opts.rate||1.0)*mul*userMul));
+      const basePitch=Math.max(0.9,Math.min(1.1,opts.pitch||1.0));
+
+      const rVar=(Math.random()-0.5)*0.04, pVar=(Math.random()-0.5)*0.04;
+      const shortCheer=text.length<=15 && /[!！]|(ナイス|頑張|最高|ファイト|すごい)/.test(text);
+
+      if(shortCheer){ u.rate=Math.max(0.55,Math.min(0.9,baseRate+0.05+rVar)); u.pitch=Math.max(0.95,Math.min(1.2,basePitch+0.05+pVar)); }
+      else if(opts.emotion==='calm'){ u.rate=Math.max(0.5,Math.min(0.85,baseRate-0.05+rVar)); u.pitch=Math.max(0.9,Math.min(1.05,basePitch-0.03+pVar)); }
+      else if(opts.emotion==='encouragement'){ u.rate=Math.max(0.55,Math.min(0.95,baseRate+0.03+rVar)); u.pitch=Math.max(0.95,Math.min(1.15,basePitch+0.03+pVar)); }
+      else { u.rate=Math.max(0.55,Math.min(0.9,baseRate+rVar)); u.pitch=Math.max(0.95,Math.min(1.1,basePitch+pVar)); }
+
+      u.onend=()=>setTimeout(resolve,250);
+      u.onerror=()=>resolve();
+      speechSynthesis.cancel(); speechSynthesis.speak(u);
+    }catch(e){ resolve(); }
+  });
+}
+
+/* === Phrases === */
+const phrases={
+  start:["いい調子、フォームを意識して！","呼吸を忘れずに、丁寧に！","背中の軸まっすぐ、ナイス！","集中、リズムをキープ！"],
+  middle:["その調子、継続が大切！","きょうの努力は明日の自信！","いいペース、そのまま続けて！","体の声を聞きながら、丁寧に！"],
+  end:["あとちょっと、ここを乗り越えたら強くなる！","ここからが本番、粘ろう！","最後まで気を抜かずに！","最後のひと踏ん張り、頑張って！"]
+};
+function phrase(i,total){const p=i/total;const a=p<=.3?phrases.start:p<=.7?phrases.middle:phrases.end;return a[Math.floor(Math.random()*a.length)];}
+
+/* === Flow === */
+let running=false,currentSet=0,timerId=null;
+function show(t){document.getElementById("msg").textContent=t;}
+function setStatus(t){document.getElementById("status").textContent=t;}
+function waitSec(s){return new Promise(res=>{timerId=setTimeout(res,s*1000);});}
+
+async function run(){
+  const total=parseInt(document.getElementById("sets").value,10);
+  const work=parseInt(document.getElementById("work").value,10);
+  const rest=parseInt(document.getElementById("rest").value,10);
+
+  running=true; currentSet=0;
+  setStatus("🌸 Getting Ready\nフォームを意識して"); show("フォームを意識しよう");
+  await speak("準備開始。フォームを意識しよう。",{emotion:'calm'}); if(navigator.vibrate) navigator.vibrate([50]);
+
+  await requestWakeLock(); await waitSec(1.5);
+
+  while(running && currentSet<total){
+    currentSet++;
+    setStatus(`💪 Set ${currentSet}/${total} WORKOUT (${work}sec)`); document.getElementById("status").className="working";
+    const p=phrase(currentSet,total); show(p); await speak(p,{emotion:'encouragement'}); await waitSec(.8); if(navigator.vibrate) navigator.vibrate([100,50,100]);
+    await waitSec(work); if(!running) break;
+
+    if(currentSet<total && rest>0){
+      setStatus(`😌 Rest Time\n${rest} sec left`); document.getElementById("status").className="";
+      const rp="呼吸を整えて、次も丁寧に。"; show(rp); await speak(rp,{emotion:'calm'}); if(navigator.vibrate) navigator.vibrate([100]); await waitSec(rest);
     }
+  }
 
-    let deferredPrompt = null;
-    const installBtn = document.getElementById('installBtn');
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      installBtn.hidden = false;
-    });
-    installBtn.addEventListener('click', async () => {
-      if (!deferredPrompt) return;
-      deferredPrompt.prompt();
-      await deferredPrompt.userChoice;
-      deferredPrompt = null;
-      installBtn.hidden = true;
-    });
+  if(running){
+    setStatus("🎉 Complete! Great Job! 🎉"); document.getElementById("status").className="completed";
+    const ep="やり切った！すばらしい集中力！"; show(ep); await speak(ep,{emotion:'encouragement'}); if(navigator.vibrate) navigator.vibrate([200,80,200,80,200]);
+  }
+  running=false; releaseWakeLock();
+}
 
-    let wakeLock = null;
-    async function requestWakeLock() {
-      try {
-        if ('wakeLock' in navigator) {
-          wakeLock = await navigator.wakeLock.request('screen');
-          wakeLock.addEventListener('release', () => {});
-        }
-      } catch (e) {}
-    }
-    function releaseWakeLock() {
-      try { wakeLock?.release(); wakeLock = null; } catch(e) {}
-    }
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible' && wakeLock) requestWakeLock();
-    });
-
-    const phrases = {
-      start: [
-        "いい調子、フォームを意識して！",
-        "呼吸を忘れずに、丁寧に！",
-        "背中の軸まっすぐ、ナイス！",
-        "集中、リズムをキープ！"
-      ],
-      middle: [
-        "その調子、継続が大切！",
-        "きょうの努力は明日の自信！",
-        "いいペース、そのまま続けて！",
-        "体の声を聞きながら、丁寧に！"
-      ],
-      end: [
-        "あとちょっと、ここを乗り越えたら強くなる！",
-        "ここからが本番、粘ろう！",
-        "最後まで気を抜かずに！",
-        "最後のひと踏ん張り、頑張って！"
-      ]
-    };
-
-    let running = false, currentSet = 0, timerId = null;
-
-    function vibrate(pattern) {
-      if (navigator.vibrate) navigator.vibrate(pattern);
-    }
-
-    function speak(text, options = {}) {
-      return new Promise((resolve) => {
-        try {
-          const u = new SpeechSynthesisUtterance(text);
-          u.lang = "ja-JP";
-          
-          // 利用可能な音声を取得して、より自然な声を選択
-          const voices = window.speechSynthesis.getVoices();
-          const japaneseVoices = voices.filter(voice => voice.lang.includes('ja'));
-          
-          // より自然な音声を優先選択
-          if (japaneseVoices.length > 0) {
-            // 女性の声でより自然なものを選択
-            const naturalVoice = japaneseVoices.find(voice => 
-              voice.name.includes('Kyoko') || 
-              voice.name.includes('Google') ||
-              voice.name.includes('Microsoft')
-            ) || japaneseVoices[0];
-            u.voice = naturalVoice;
-          }
-          
-          // ブラウザ検出
-          const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
-          const isSafari = /Safari/.test(navigator.userAgent) && /Apple Computer/.test(navigator.vendor);
-          const isFirefox = /Firefox/.test(navigator.userAgent);
-          
-          // ブラウザ別基本速度調整（さらに遅く）
-          let browserRateMultiplier = 1.0;
-          if (isChrome) {
-            browserRateMultiplier = 0.4;  // Chromeをさらに遅く
-          } else if (isSafari) {
-            browserRateMultiplier = 0.5;  // Safariもさらに遅く
-          } else if (isFirefox) {
-            browserRateMultiplier = 0.45;  // Firefoxもさらに遅く
-          }
-          
-          // 自然でゆっくりな音声設定
-          const baseRate = (options.rate || 0.6) * browserRateMultiplier;  // 基本速度をさらに下げる
-          const basePitch = options.pitch || 1.0;  // 基本ピッチを完全に自然に
-          
-          // テキスト内容を分析して感嘆詞・掛け声を検出
-          const hasExclamation = /[！!]/.test(text);
-          const hasCheerWords = /(ナイス|いいぞ|頑張|やった|すごい|最高|グッド|ファイト)/.test(text);
-          const isShortCheer = text.length <= 15 && (hasExclamation || hasCheerWords);
-          
-          // 小さなランダム調整値（±3%の範囲で控えめに）
-          const rateVariation = (Math.random() - 0.5) * 0.06;
-          const pitchVariation = (Math.random() - 0.5) * 0.06;
-          
-          // 基本設定（自然でゆっくりな声）
-          u.rate = Math.max(0.5, Math.min(0.9, baseRate + rateVariation));
-          u.pitch = Math.max(0.9, Math.min(1.2, basePitch + pitchVariation));
-          
-          // 短い掛け声・感嘆詞の場合は少し元気に（でもゆっくり）
-          if (isShortCheer) {
-            u.pitch = Math.max(1.1, Math.min(1.3, basePitch + 0.2 + pitchVariation));  // 掛け声は少し高く
-            u.rate = Math.max(0.6, Math.min(0.9, baseRate + 0.1 + rateVariation));   // 少し早めでもゆっくり
-          }
-          // 感情に応じた微調整（ゆっくり範囲内）
-          else if (options.emotion === 'encouragement') {
-            u.pitch = Math.max(0.95, Math.min(1.15, basePitch + 0.05 + pitchVariation));  // ほんの少し高めに
-            u.rate = Math.max(0.5, Math.min(0.8, baseRate + 0.05 + rateVariation));   // ゆっくり
-          } else if (options.emotion === 'calm') {
-            u.pitch = Math.max(0.9, Math.min(1.1, basePitch - 0.05 + pitchVariation)); // ほんの少し低めで落ち着いて
-            u.rate = Math.max(0.4, Math.min(0.7, baseRate - 0.1 + rateVariation));   // かなりゆっくり
-          }
-          
-          // 句読点での間を作るため、テキストを調整
-          const processedText = text
-            .replace(/、/g, '、　')  // 読点の後に間を追加
-            .replace(/！/g, '！　')  // 感嘆符の後に間を追加
-            .replace(/。/g, '。　');  // 句点の後に間を追加
-          
-          u.text = processedText;
-          
-          // 音声終了時にPromiseを解決
-          u.onend = () => {
-            setTimeout(resolve, 300); // 音声終了後300ms追加の間
-          };
-          
-          u.onerror = () => {
-            resolve(); // エラー時も解決して処理を続行
-          };
-          
-          window.speechSynthesis.cancel();
-          window.speechSynthesis.speak(u);
-        } catch (e) {
-          resolve(); // 例外時も解決
-        }
-      });
-    }
-
-    function getPhrase(currentSet, totalSets) {
-      let phaseArray;
-      const progress = currentSet / totalSets;
-      
-      if (progress <= 0.3) {
-        phaseArray = phrases.start;  // 序盤（30%まで）
-      } else if (progress <= 0.7) {
-        phaseArray = phrases.middle; // 中盤（30-70%）
-      } else {
-        phaseArray = phrases.end;    // 終盤（70%以降）
-      }
-      
-      return phaseArray[Math.floor(Math.random() * phaseArray.length)];
-    }
-
-    function show(text) {
-      document.getElementById("msg").textContent = text;
-    }
-
-    function setStatus(text) {
-      document.getElementById("status").textContent = text;
-    }
-
-    function waitSec(sec) {
-      return new Promise(res => { timerId = setTimeout(res, sec * 1000); });
-    }
-
-    async function run() {
-      const totalSets = parseInt(document.getElementById("sets").value, 10);
-      const work = parseInt(document.getElementById("work").value, 10);
-      const rest = parseInt(document.getElementById("rest").value, 10);
-
-      running = true;
-      currentSet = 0;
-      setStatus("🌸 Getting Ready\nフォームを意識して");
-      show("フォームを意識しよう");
-      await speak("準備開始。フォームを意識しよう。", { emotion: 'calm' });
-      vibrate([50]);
-
-      await requestWakeLock();
-      await waitSec(2); // 音声待機を含めて適切な間隔に短縮
-
-      while (running && currentSet < totalSets) {
-        currentSet++;
-        setStatus(`💪 Set ${currentSet}/${totalSets} WORKOUT (${work}sec)`);
-        document.getElementById("status").className = "working";
-        const p = getPhrase(currentSet, totalSets);
-        show(p);
-        await speak(p, { emotion: 'encouragement' });
-        await waitSec(1); // 励ましの後に少し間を置く
-        vibrate([100, 50, 100]);
-        await waitSec(work);
-        if (!running) break;
-
-        if (currentSet < totalSets && rest > 0) {
-          setStatus(`😌 Rest Time\n${rest} sec left`);
-          document.getElementById("status").className = "";
-          const rp = "呼吸を整えて、次も丁寧に。";
-          show(rp);
-          await speak(rp, { emotion: 'calm' });
-          vibrate([100]);
-          await waitSec(rest);
-        }
-      }
-
-      if (running) {
-        setStatus("🎉 Complete! Great Job! 🎉");
-        document.getElementById("status").className = "completed";
-        const ep = "やり切った！すばらしい集中力！";
-        show(ep);
-        await speak(ep, { emotion: 'encouragement' });
-        vibrate([200, 80, 200, 80, 200]);
-      }
-      running = false;
-      releaseWakeLock();
-    }
-
-    document.getElementById("startBtn").addEventListener("click", () => {
-      if (running) return;
-      run();
-    });
-    document.getElementById("stopBtn").addEventListener("click", () => {
-      running = false;
-      clearTimeout(timerId);
-      window.speechSynthesis.cancel();
-      setStatus("💤 停止中");
-      document.getElementById("status").className = "";
-      show("");
-      releaseWakeLock();
-    });
-  </script>
+/* === Buttons === */
+document.getElementById("startBtn").addEventListener("click",()=>{if(!running) run();});
+document.getElementById("stopBtn").addEventListener("click",()=>{
+  running=false; clearTimeout(timerId); speechSynthesis.cancel();
+  setStatus("💤 停止中"); document.getElementById("status").className=""; show(""); releaseWakeLock();
+});
+</script>
 </body>
 </html>
