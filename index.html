@@ -396,15 +396,15 @@
           // ブラウザ別基本速度調整
           let browserRateMultiplier = 1.0;
           if (isChrome) {
-            browserRateMultiplier = 0.7;  // Chromeは早いので遅くする
+            browserRateMultiplier = 0.6;  // Chromeはさらに遅くする
           } else if (isSafari) {
-            browserRateMultiplier = 1.0;  // Safariは標準速度
+            browserRateMultiplier = 0.8;  // Safariも少し遅めに
           } else if (isFirefox) {
-            browserRateMultiplier = 0.9;  // Firefoxは少し遅めに
+            browserRateMultiplier = 0.7;  // Firefoxも遅めに
           }
           
-          // 可愛くて適度な音声設定（全体的に遅めに）
-          const baseRate = (options.rate || 0.8) * browserRateMultiplier;
+          // 可愛くてゆっくりな音声設定
+          const baseRate = (options.rate || 0.7) * browserRateMultiplier;
           const basePitch = options.pitch || 1.4;  // 基本ピッチを高く（可愛い声）
           
           // 小さなランダム調整値（±5%の範囲で控えめに）
